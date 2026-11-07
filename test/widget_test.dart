@@ -1,30 +1,58 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:taskflow/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('task actions update pending and daily completed counts', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const TaskFlowApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Tareas pendientes: 3'), findsOneWidget);
+    expect(find.text('Completadas hoy: 0 de 5'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.text('Agregar tarea'));
     await tester.pump();
+    await tester.tap(find.text('Agregar tarea'));
+    await tester.pump();
+    expect(find.text('Tareas pendientes: 5'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    for (var i = 0; i < 5; i++) {
+      await tester.tap(find.text('Completar una tarea'));
+      await tester.pump();
+    }
+
+    expect(find.text('Tareas pendientes: 0'), findsOneWidget);
+    expect(find.text('Completadas hoy: 5 de 5'), findsOneWidget);
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Completar una tarea'),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      find.text('¡Excelente! No tienes tareas pendientes.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Agregar tarea'));
+    await tester.pump();
+    expect(find.text('Tareas pendientes: 1'), findsOneWidget);
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Completar una tarea'),
+          )
+          .onPressed,
+      isNotNull,
+    );
+
+    await tester.tap(find.text('Completar una tarea'));
+    await tester.pump();
+    expect(find.text('Tareas pendientes: 0'), findsOneWidget);
+    expect(find.text('Completadas hoy: 5 de 5'), findsOneWidget);
   });
 }
