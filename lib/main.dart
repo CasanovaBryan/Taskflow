@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'task.dart';
+
 void main() {
   runApp(const TaskFlowApp());
 }
@@ -22,22 +24,6 @@ class TaskFlowApp extends StatelessWidget {
   }
 }
 
-class Task {
-  const Task({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.priority,
-    required this.isCompleted,
-  });
-
-  final int id;
-  final String title;
-  final String description;
-  final String priority;
-  final bool isCompleted;
-}
-
 const demoTasks = [
   Task(
     id: 1,
@@ -45,6 +31,7 @@ const demoTasks = [
     description: 'Preparar la estructura inicial de TaskFlow',
     priority: 'Alta',
     isCompleted: true,
+    userId: 1,
   ),
   Task(
     id: 2,
@@ -52,6 +39,7 @@ const demoTasks = [
     description: 'Mostrar título, prioridad y descripción',
     priority: 'Alta',
     isCompleted: false,
+    userId: 1,
   ),
   Task(
     id: 3,
@@ -59,6 +47,7 @@ const demoTasks = [
     description: 'Construir elementos con ListView.builder',
     priority: 'Alta',
     isCompleted: false,
+    userId: 1,
   ),
   Task(
     id: 4,
@@ -66,6 +55,7 @@ const demoTasks = [
     description: 'Distinguir tareas pendientes y completadas',
     priority: 'Media',
     isCompleted: false,
+    userId: 1,
   ),
   Task(
     id: 5,
@@ -73,6 +63,7 @@ const demoTasks = [
     description: 'Ejecutar pruebas y flutter analyze',
     priority: 'Media',
     isCompleted: false,
+    userId: 1,
   ),
 ];
 
@@ -198,6 +189,8 @@ class TaskDetailScreen extends StatelessWidget {
                           : 'Estado: pendiente',
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  Text('Usuario: ${currentTask.userId}'),
                 ],
               ),
             ),
