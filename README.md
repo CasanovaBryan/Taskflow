@@ -61,3 +61,15 @@ userId (entero que identifica al usuario de prueba).
 
 La API concreta se elegirá después. Estas rutas son requisitos, no direcciones
 de un servidor ya conectado.
+
+## API de tareas
+
+- Fuente: JSONPlaceholder, `https://jsonplaceholder.typicode.com`.
+- Endpoint: `GET /todos`.
+- Filtro configurado: `userId=1`.
+- Campos recibidos: `id`, `title`, `completed` y `userId`.
+- `completed` se convierte a `isCompleted`.
+- Los campos `description` y `priority` no existen en la API y TaskFlow les
+  asigna respectivamente `Sin descripción (API)` y `Sin prioridad (API)`.
+- Marcar una tarea como completada modifica únicamente una copia en memoria.
+  Reiniciar la app vuelve a cargar los datos originales desde la API.

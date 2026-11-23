@@ -38,7 +38,7 @@ class TaskFlowApp extends StatelessWidget {
     if (!wrapProvider) return app;
 
     return ChangeNotifierProvider<TasksViewModel>(
-      create: (_) => TasksViewModel(LocalTaskRepository()),
+      create: (_) => TasksViewModel(LocalTaskRepository())..loadTasks(),
       child: app,
     );
   }
