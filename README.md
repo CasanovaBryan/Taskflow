@@ -73,3 +73,23 @@ de un servidor ya conectado.
   asigna respectivamente `Sin descripción (API)` y `Sin prioridad (API)`.
 - Marcar una tarea como completada modifica únicamente una copia en memoria.
   Reiniciar la app vuelve a cargar los datos originales desde la API.
+
+## Estados de carga de la sesión 8
+
+- **Carga:** se muestra un indicador mientras `loadTasks()` consulta la API.
+- **Éxito:** una respuesta con tareas dibuja una tarjeta por cada tarea.
+- **Vacío:** una respuesta válida sin elementos muestra
+  "Todavía no hay tareas para mostrar." y permite actualizar.
+- **Error:** una falla de red, servidor o formato muestra el mensaje
+  "No se pudieron cargar las tareas." junto al botón "Reintentar".
+
+### Evidencia manual
+
+1. Con internet disponible, confirmar que aparece el indicador y luego las tareas
+   remotas. Abrir una tarea y verificar que conserva su identificador y título.
+2. Para provocar un error, desactivar la conexión del emulador, pulsar
+   "Actualizar" y observar el botón "Reintentar". Reactivar la conexión y
+   pulsar "Reintentar" para recuperar el listado sin reiniciar la aplicación.
+3. Para provocar el vacío, cambiar temporalmente `TaskApiService.userId` a
+   `9999`, reiniciar la aplicación y comprobar el mensaje de respuesta vacía.
+   Restaurar `userId` a `1` al finalizar.
