@@ -4,55 +4,62 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:taskflow/main.dart';
 
 void main() {
-  testWidgets('task actions update pending and daily completed counts', (
+  testWidgets('shows local task cards in a scrollable list', (
     WidgetTester tester,
   ) async {
+    tester.view.physicalSize = const Size(400, 400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(const TaskFlowApp());
+    await tester.pumpAndSettle();
 
-    expect(find.text('Tareas pendientes: 3'), findsOneWidget);
-    expect(find.text('Completadas hoy: 0 de 5'), findsOneWidget);
+    expect(find.text('Mis tareas'), findsOneWidget);
+    expect(find.byType(ListView), findsOneWidget);
+    expect(find.text('Configurar el proyecto Flutter'), findsOneWidget);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
 
-    await tester.tap(find.text('Agregar tarea'));
-    await tester.pump();
-    await tester.tap(find.text('Agregar tarea'));
-    await tester.pump();
-    expect(find.text('Tareas pendientes: 5'), findsOneWidget);
-
-    for (var i = 0; i < 5; i++) {
-      await tester.tap(find.text('Completar una tarea'));
-      await tester.pump();
-    }
-
-    expect(find.text('Tareas pendientes: 0'), findsOneWidget);
-    expect(find.text('Completadas hoy: 5 de 5'), findsOneWidget);
-    expect(
-      tester
-          .widget<OutlinedButton>(
-            find.widgetWithText(OutlinedButton, 'Completar una tarea'),
-          )
-          .onPressed,
-      isNull,
+    await tester.scrollUntilVisible(
+      find.text('Revisar y evidenciar el avance'),
+      200,
+      scrollable: find.byType(Scrollable),
     );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Revisar y evidenciar el avance'), findsOneWidget);
+    expect(find.text('Prioridad: Media'), findsWidgets);
+    expect(demoTasks, hasLength(5));
+
+    await tester.tap(find.text('Revisar y evidenciar el avance'));
+    await tester.pumpAndSettle();
+    expect(find.text('Detalle de tarea'), findsOneWidget);
+    expect(find.text('Revisar y evidenciar el avance'), findsOneWidget);
+    expect(find.text('Prioridad: Media'), findsOneWidget);
+    expect(find.text('Estado: pendiente'), findsOneWidget);
+
+    await tester.tap(find.text('Volver al listado'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mis tareas'), findsOneWidget);
+
+    await tester.drag(find.byType(ListView), const Offset(0, 1000));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Configurar el proyecto Flutter'));
+    await tester.pumpAndSettle();
     expect(
-      find.text('¡Excelente! No tienes tareas pendientes.'),
+      find.text('Preparar la estructura inicial de TaskFlow'),
       findsOneWidget,
     );
+    expect(find.text('Estado: completada'), findsOneWidget);
 
-    await tester.tap(find.text('Agregar tarea'));
-    await tester.pump();
-    expect(find.text('Tareas pendientes: 1'), findsOneWidget);
+    await tester.tap(find.text('Volver al listado'));
+    await tester.pumpAndSettle();
+    appRouter.go('/task/invalid');
+    await tester.pumpAndSettle();
+    expect(find.text('Tarea no encontrada'), findsOneWidget);
     expect(
-      tester
-          .widget<OutlinedButton>(
-            find.widgetWithText(OutlinedButton, 'Completar una tarea'),
-          )
-          .onPressed,
-      isNotNull,
+      find.text('No existe una tarea con ese identificador.'),
+      findsOneWidget,
     );
-
-    await tester.tap(find.text('Completar una tarea'));
-    await tester.pump();
-    expect(find.text('Tareas pendientes: 0'), findsOneWidget);
-    expect(find.text('Completadas hoy: 5 de 5'), findsOneWidget);
   });
 }
